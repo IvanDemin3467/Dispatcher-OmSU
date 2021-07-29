@@ -15,3 +15,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 Uses googleapiclient library from
 https://github.com/googleapis/google-api-python-client
+
+**Requres**
+```
+pip install google-api-python-client
+```
