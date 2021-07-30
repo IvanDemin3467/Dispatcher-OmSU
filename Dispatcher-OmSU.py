@@ -29,14 +29,20 @@ def list_calendar_events(service):
     page_token = None
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
+        #print(events)
         for event in events['items']:
             try:
                 print(event['summary'])
+                print(event['id'])
             except:
                 print("Some error with 'summary' field")
         page_token = events.get('nextPageToken')
         if not page_token:
             break
+
+
+def del_all_calendar_events():
+    
 
 
 if __name__ == '__main__':
@@ -50,4 +56,7 @@ if __name__ == '__main__':
             list_calendar_events(service)
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             break
+        if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
+            if(input("Are you sure?") == "Yes"):
+                
     service.close()
