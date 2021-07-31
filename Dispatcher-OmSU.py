@@ -42,7 +42,14 @@ def list_calendar_events(service):
 
 
 def del_all_calendar_events():
-    
+    page_token = None
+    while True:
+        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
+        for event in events['items']:
+            service.events().delete(calendarId='primary', eventId=event['id']).execute()
+        page_token = events.get('nextPageToken')
+        if not page_token:
+            break
 
 
 if __name__ == '__main__':
