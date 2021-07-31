@@ -33,7 +33,7 @@ def list_calendar_events(service):
         for event in events['items']:
             try:
                 print(event['summary'])
-                print(event['id'])
+                #print(event['id'])
             except:
                 print("Some error with 'summary' field")
         page_token = events.get('nextPageToken')
@@ -44,9 +44,17 @@ def list_calendar_events(service):
 def del_all_calendar_events():
     page_token = None
     while True:
+        
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
         for event in events['items']:
-            service.events().delete(calendarId='primary', eventId=event['id']).execute()
+            try:
+                Id = event['id']
+            except:
+                print("No id")
+            try:
+                service.events().delete(calendarId='primary', eventId=event['id']).execute()
+            except:
+                print("Can not delete")
         page_token = events.get('nextPageToken')
         if not page_token:
             break
@@ -65,5 +73,5 @@ if __name__ == '__main__':
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             if(input("Are you sure?") == "Yes"):
-                
+                del_all_calendar_events()
     service.close()
