@@ -60,6 +60,23 @@ def del_all_calendar_events():
             break
 
 
+def list_events_by_string(service):
+    page_token = None
+    while True:
+        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
+        #print(events)
+        for event in events['items']:
+            try:
+                print(event['summary'])
+                print(event['start']["dateTime"])
+                #print(event['id'])
+            except:
+                print("Some error with 'summary' field")
+        page_token = events.get('nextPageToken')
+        if not page_token:
+            break
+
+
 if __name__ == '__main__':
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
@@ -69,6 +86,8 @@ if __name__ == '__main__':
         Input = input("Next task: ")
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service)
+        if Input == "bystring":
+            list_events_by_string(service)
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
