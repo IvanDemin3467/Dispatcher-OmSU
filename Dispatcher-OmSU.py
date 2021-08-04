@@ -64,16 +64,29 @@ def del_all_calendar_events():
 
 def list_events_by_param(service):
     page_token = None
+    
+    # get options
+    stream = open("options.txt", "rt")
+    lower_date = stream.readline()
+    lower_date = lower_date.rstrip()
+    lower_date = datetime.strptime(lower_date, "%Y-%m-%d %H:%M:%S")
+    print(lower_date)
+    upper_date = stream.readline()
+    upper_date = upper_date.rstrip()
+    upper_date = datetime.strptime(upper_date, "%Y-%m-%d %H:%M:%S")
+    print(upper_date)
+
+    # get events
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
-        #print(events)
         for event in events['items']:
             try:
                 print(event['summary'])
                 print(event['start']['dateTime'])
                 event_start = datetime.strptime(event['start']['dateTime'], "%Y-%m-%dT%H:%M:%S+06:00")
                 print(event_start)
-                #2021-07-28T01:00:00+06:00
+                if event_start > lower_date and event_start < upper_date:
+                    print("Date in desired interval")
                 #print(event['id'])
             except:
                 print("Some error with 'summary' field")
