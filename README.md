@@ -3,9 +3,6 @@ Application for the dispatcher to work with the Google Calendar via Web API
 
 **uses**
 ``` 
-import os
-import pprint
-
 import google.oauth2.credentials
 
 from googleapiclient.discovery import build
@@ -19,4 +16,12 @@ https://github.com/googleapis/google-api-python-client
 **Requres**
 ```
 pip install google-api-python-client
+```
+
+**Features**
+```
+list - lists all events in main calendar
+bydate - lists all events in main calendar which are between dates, given in options.txt
+quit - quits program
+del -all - deletes all events in main calendar
 ```
