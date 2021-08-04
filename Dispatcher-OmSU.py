@@ -7,6 +7,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+from datetime import datetime
+
 pp = pprint.PrettyPrinter(indent=2)
 
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
@@ -60,7 +62,7 @@ def del_all_calendar_events():
             break
 
 
-def list_events_by_string(service):
+def list_events_by_param(service):
     page_token = None
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
@@ -68,7 +70,10 @@ def list_events_by_string(service):
         for event in events['items']:
             try:
                 print(event['summary'])
-                print(event['start']["dateTime"])
+                print(event['start']['dateTime'])
+                event_start = datetime.strptime(event['start']['dateTime'], "%Y-%m-%dT%H:%M:%S+06:00")
+                print(event_start)
+                #2021-07-28T01:00:00+06:00
                 #print(event['id'])
             except:
                 print("Some error with 'summary' field")
@@ -87,7 +92,7 @@ if __name__ == '__main__':
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service)
         if Input == "bystring":
-            list_events_by_string(service)
+            list_events_by_param(service)
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
