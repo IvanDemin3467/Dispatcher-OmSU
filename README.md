@@ -21,9 +21,11 @@ pip install google-api-python-client
 **Features**
 ```
 list - lists all events in main calendar
-bydate - lists all events in main calendar which are between dates, given in options.txt
 quit - quits program
 del -all - deletes all events in main calendar
+byparam - lists all events in main calendar which are between dates, given in options
+          Also it filters events by name. Choses events that contain give string in name
+          It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
 ```
 **Functions**
 ```
