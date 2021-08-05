@@ -70,18 +70,18 @@ def list_events_by_param(service, options):
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
         for event in events['items']:
             try:
-                event_name = event['summary'])
+                event_name = event['summary']
                 event_start = datetime.strptime(event['start']['dateTime'],
                                                 "%Y-%m-%dT%H:%M:%S+06:00")
-                print(event_name)
-                print(event_start)
-                if event_start > options["lower_date"] and
-                   event_start < options["upper_date"] and
+                if event_start > options["lower_date"] and \
+                   event_start < options["upper_date"] and \
                    options["group"] in event_name:
-                    print("Date in desired interval")
+                    print(event_name)
+                    print(event_start)
+                    print("Group and date are ok")
                 #print(event['id'])
             except:
-                print("Some error with 'summary' field")
+                print("Some error")
         page_token = events.get('nextPageToken')
         if not page_token:
             break
@@ -99,6 +99,7 @@ def get_options():
     print(group)
     options["group"] = group
     stream.close()
+    return options
 
 
 if __name__ == '__main__':
@@ -106,9 +107,9 @@ if __name__ == '__main__':
     # running in production *do not* leave this option enabled.
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     service = get_authenticated_service()
-    options = get_options()
     while True:
         Input = input("Next task: ")
+        options = get_options()
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service)
         if Input == "byparam":
