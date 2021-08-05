@@ -25,6 +25,10 @@ bydate - lists all events in main calendar which are between dates, given in opt
 quit - quits program
 del -all - deletes all events in main calendar
 ```
-**update**
-New function implemented - get_options
-It reads parameters from file: lower_date, upper_date, group
+**Functions**
+```
+def get_options():
+    # It reads parameters from file: lower_date, upper_date, group
+    # Those params are to be passed to function list_events_by_param
+    # That function will list events, filtered by params
+``` 
