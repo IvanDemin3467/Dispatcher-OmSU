@@ -88,7 +88,9 @@ def list_events_by_param(service, options):
 
 
 def get_options():
-    # get options
+    # It reads parameters from file: lower_date, upper_date, group
+    # Those params are to be passed to function list_events_by_param
+    # That function will list events, filtered by params
     options = {}
     stream = open("options.txt", "rt")
     lower_date = stream.readline().rstrip()
