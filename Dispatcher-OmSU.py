@@ -16,7 +16,7 @@ pp = pprint.PrettyPrinter(indent=2)
 # client_secret.
 CLIENT_SECRETS_FILE = "client_secret.json"
 
-# This access scope grants read-only access to the authenticated user's Drive
+# This access scope grants read-only access to the authenticated user's Calendar
 # account.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 API_SERVICE_NAME = 'calendar'
@@ -62,30 +62,22 @@ def del_all_calendar_events():
             break
 
 
-def list_events_by_param(service):
+def list_events_by_param(service, options):
     page_token = None
-    
-    # get options
-    stream = open("options.txt", "rt")
-    lower_date = stream.readline()
-    lower_date = lower_date.rstrip()
-    lower_date = datetime.strptime(lower_date, "%Y-%m-%d %H:%M:%S")
-    print(lower_date)
-    upper_date = stream.readline()
-    upper_date = upper_date.rstrip()
-    upper_date = datetime.strptime(upper_date, "%Y-%m-%d %H:%M:%S")
-    print(upper_date)
 
     # get events
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
         for event in events['items']:
             try:
-                print(event['summary'])
-                print(event['start']['dateTime'])
-                event_start = datetime.strptime(event['start']['dateTime'], "%Y-%m-%dT%H:%M:%S+06:00")
+                event_name = event['summary'])
+                event_start = datetime.strptime(event['start']['dateTime'],
+                                                "%Y-%m-%dT%H:%M:%S+06:00")
+                print(event_name)
                 print(event_start)
-                if event_start > lower_date and event_start < upper_date:
+                if event_start > options["lower_date"] and
+                   event_start < options["upper_date"] and
+                   options["group"] in event_name:
                     print("Date in desired interval")
                 #print(event['id'])
             except:
@@ -95,17 +87,32 @@ def list_events_by_param(service):
             break
 
 
+def get_options():
+    # get options
+    options = {}
+    stream = open("options.txt", "rt")
+    lower_date = stream.readline().rstrip()
+    options["lower_date"] = datetime.strptime(lower_date, "%Y-%m-%d %H:%M:%S")
+    upper_date = stream.readline().rstrip()
+    options["upper_date"] = datetime.strptime(upper_date, "%Y-%m-%d %H:%M:%S")
+    group = stream.readline().rstrip()
+    print(group)
+    options["group"] = group
+    stream.close()
+
+
 if __name__ == '__main__':
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     service = get_authenticated_service()
+    options = get_options()
     while True:
         Input = input("Next task: ")
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service)
-        if Input == "bystring":
-            list_events_by_param(service)
+        if Input == "byparam":
+            list_events_by_param(service, options)
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
