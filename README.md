@@ -31,6 +31,7 @@ There are a few setup steps you need to complete before you can use this library
 list - lists all events in main calendar
 quit - quits program
 del -all - deletes all events in main calendar
+           Also searches through all calendars for given user
 byparam - lists all events in main calendar which are between dates, given in options
           Also it filters events by name. Choses events that contain give string in name
           It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
@@ -43,7 +44,12 @@ def get_options():
     # It reads parameters from file: lower_date, upper_date, group
     # Those params are to be passed to function list_events_by_param
     # That function will list events, filtered by params
+    
 def get_calendar_list():
     # This function retrieves list of calendars for user
     # Returns list if calendar IDs
+    
+def del_all_calendar_events(service, options):
+    # This function deletes all events before given date
+    # Also searches through all calendars for given user
 ``` 
