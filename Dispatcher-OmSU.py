@@ -101,10 +101,21 @@ def get_options():
     upper_date = stream.readline().rstrip()
     options["upper_date"] = datetime.strptime(upper_date, "%Y-%m-%d %H:%M:%S")
     group = stream.readline().rstrip()
-    print(group)
     options["group"] = group
     stream.close()
     return options
+
+def get_calendar_list():
+    # This function retrieves list of calendars for user
+    # Returns list if calendar IDs
+    page_token = None
+    while True:
+      calendar_list = service.calendarList().list(pageToken=page_token).execute()
+      for calendar_list_entry in calendar_list['items']:
+        print(calendar_list_entry['summary'])
+      page_token = calendar_list.get('nextPageToken')
+      if not page_token:
+        break
 
 
 if __name__ == '__main__':
@@ -119,6 +130,8 @@ if __name__ == '__main__':
             list_calendar_events(service)
         if Input == "byparam":
             list_events_by_param(service, options)
+        if Input == "cal_list":
+            get_calendar_list()
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
