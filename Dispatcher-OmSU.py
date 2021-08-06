@@ -29,6 +29,7 @@ def get_authenticated_service():
 
 def list_calendar_events(service):
     page_token = None
+    
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
         #print(events)
@@ -43,23 +44,28 @@ def list_calendar_events(service):
             break
 
 
-def del_all_calendar_events():
+def del_all_calendar_events(service, options):
+    # This function deletes all events before given date
+    # Also searches through all calendars for given user
     page_token = None
-    while True:
-        
-        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
-        for event in events['items']:
-            try:
-                Id = event['id']
-            except:
-                print("No id")
-            try:
-                service.events().delete(calendarId='primary', eventId=event['id']).execute()
-            except:
-                print("Can not delete")
-        page_token = events.get('nextPageToken')
-        if not page_token:
-            break
+
+    # get calendar list
+    calendar_list = get_calendar_list()
+
+    # del events
+    for calendar in calendar_list:
+        while True:
+            events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
+            for event in events['items']:
+                try:
+                    if event_start < options["lower_date"]:
+                        service.events().delete(calendarId=calendar,
+                                                eventId=event['id']).execute()
+                except:
+                    print("Can not delete")
+            page_token = events.get('nextPageToken')
+            if not page_token:
+                break
 
 
 def list_events_by_param(service, options):
@@ -145,5 +151,5 @@ if __name__ == '__main__':
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             if(input("Are you sure?") == "Yes"):
-                del_all_calendar_events()
+                del_all_calendar_events(service, options)
     service.close()
