@@ -34,6 +34,7 @@ del -all - deletes all events in main calendar
 byparam - lists all events in main calendar which are between dates, given in options
           Also it filters events by name. Choses events that contain give string in name
           It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
+cal_list - lists calendars for user
 ```
 **Functions**
 ```
@@ -41,4 +42,7 @@ def get_options():
     # It reads parameters from file: lower_date, upper_date, group
     # Those params are to be passed to function list_events_by_param
     # That function will list events, filtered by params
+def get_calendar_list():
+    # This function retrieves list of calendars for user
+    # Returns list if calendar IDs
 ``` 
