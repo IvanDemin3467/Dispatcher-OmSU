@@ -66,28 +66,34 @@ def list_events_by_param(service, options):
     # lists all events in main calendar which are between dates, given in options
     # Also it filters events by name. Choses events that contain give string in name
     # It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
+    # Also searches all calendars for given user
     page_token = None
 
+    # get calendar list
+    calendar_list = get_calendar_list()
+
     # get events
-    while True:
-        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
-        for event in events['items']:
-            try:
-                event_name = event['summary']
-                event_start = datetime.strptime(event['start']['dateTime'],
-                                                "%Y-%m-%dT%H:%M:%S+06:00")
-                if event_start > options["lower_date"] and \
-                   event_start < options["upper_date"] and \
-                   options["group"] in event_name:
-                    print(event_name)
-                    print(event_start)
-                    print("Group and date are ok")
-                #print(event['id'])
-            except:
-                print("Some error")
-        page_token = events.get('nextPageToken')
-        if not page_token:
-            break
+    for calendar in calendar_list:
+        while True:
+            events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
+            for event in events['items']:
+                try:
+                    event_name = event['summary']
+                    event_start = datetime.strptime(event['start']['dateTime'],
+                                                    "%Y-%m-%dT%H:%M:%S+06:00")
+                    if event_start > options["lower_date"] and \
+                       event_start < options["upper_date"] and \
+                       options["group"] in event_name:
+                        print("calendar: ", calendar)
+                        print("event_name: ", event_name)
+                        print("event_start: ", event_start)
+                        print("Group and date are ok")
+                    #print(event['id'])
+                except:
+                    print("Some error")
+            page_token = events.get('nextPageToken')
+            if not page_token:
+                break
 
 
 def get_options():
@@ -109,13 +115,16 @@ def get_calendar_list():
     # This function retrieves list of calendars for user
     # Returns list if calendar IDs
     page_token = None
+    cal_list = []
     while True:
       calendar_list = service.calendarList().list(pageToken=page_token).execute()
       for calendar_list_entry in calendar_list['items']:
-        print(calendar_list_entry['summary'])
+        #print(calendar_list_entry['summary'])
+          cal_list.append(calendar_list_entry['id'])
       page_token = calendar_list.get('nextPageToken')
       if not page_token:
         break
+    return cal_list
 
 
 if __name__ == '__main__':
