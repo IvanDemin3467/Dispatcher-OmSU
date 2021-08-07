@@ -74,12 +74,14 @@ def list_events_by_param(service, options):
     # It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
     # (Cyrillic letters are accepted)
     # Also searches all calendars for given user
+    # Prints name of calendar, name of event and event date-time
     page_token = None
 
     # get calendar list
     calendar_dict = get_calendar_dict()
 
     # get events
+    print("********************\nList of evens for group:", options["group"])
     for calendar in calendar_dict:
         while True:
             events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
@@ -91,13 +93,14 @@ def list_events_by_param(service, options):
                     if event_start > options["lower_date"] and \
                        event_start < options["upper_date"] and \
                        options["group"] in event_name:
-                        print("calendar: ", calendar_dict[calendar])
-                        print("event_name: ", event_name)
-                        print("event_start: ", event_start)
-                        print("Group and date are ok")
+                        print("********************")
+                        print("Calendar: ", calendar_dict[calendar])
+                        print("Event_name: ", event_name)
+                        print("Event_start: ", event_start)
                     #print(event['id'])
                 except:
-                    print("Some error")
+                    pass
+                    #print("Some error")
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
