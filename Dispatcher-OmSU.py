@@ -50,7 +50,7 @@ def del_all_calendar_events(service, options):
     page_token = None
 
     # get calendar list
-    calendar_list = get_calendar_list()
+    calendar_list = get_calendar_dict()
 
     # del events
     for calendar in calendar_list:
@@ -72,14 +72,15 @@ def list_events_by_param(service, options):
     # lists all events in main calendar which are between dates, given in options
     # Also it filters events by name. Choses events that contain give string in name
     # It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
+    # (Cyrillic letters are accepted)
     # Also searches all calendars for given user
     page_token = None
 
     # get calendar list
-    calendar_list = get_calendar_list()
+    calendar_dict = get_calendar_dict()
 
     # get events
-    for calendar in calendar_list:
+    for calendar in calendar_dict:
         while True:
             events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
             for event in events['items']:
@@ -90,7 +91,7 @@ def list_events_by_param(service, options):
                     if event_start > options["lower_date"] and \
                        event_start < options["upper_date"] and \
                        options["group"] in event_name:
-                        print("calendar: ", calendar)
+                        print("calendar: ", calendar_dict[calendar])
                         print("event_name: ", event_name)
                         print("event_start: ", event_start)
                         print("Group and date are ok")
@@ -117,20 +118,20 @@ def get_options():
     stream.close()
     return options
 
-def get_calendar_list():
+def get_calendar_dict():
     # This function retrieves list of calendars for user
-    # Returns list if calendar IDs
+    # Returns dict if calendar_ID: calenar_summary
     page_token = None
-    cal_list = []
+    calendar_dict = {}
     while True:
       calendar_list = service.calendarList().list(pageToken=page_token).execute()
       for calendar_list_entry in calendar_list['items']:
         #print(calendar_list_entry['summary'])
-          cal_list.append(calendar_list_entry['id'])
+          calendar_dict[calendar_list_entry['id']] = calendar_list_entry['summary']
       page_token = calendar_list.get('nextPageToken')
       if not page_token:
         break
-    return cal_list
+    return calendar_dict
 
 
 if __name__ == '__main__':
