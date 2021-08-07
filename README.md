@@ -25,6 +25,7 @@ There are a few setup steps you need to complete before you can use this library
 1.  If you don't already have a Google account, [sign up](https://www.google.com/accounts).
 2.  If you have never created a Google APIs Console project, read the [Managing Projects page](http://developers.google.com/console/help/managing-projects) and create a project in the [Google API Console](https://console.developers.google.com/).
 3.  [Install](http://developers.google.com/api-client-library/python/start/installation) the library.
+4.  To add new tester while app is in test mode -> go to your [Google APIs Console] (https://console.cloud.google.com/apis/credentials/consent)
 
 **Features**
 ```
