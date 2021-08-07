@@ -107,7 +107,7 @@ def get_options():
     # Those params are to be passed to function list_events_by_param
     # That function will list events, filtered by params
     options = {}
-    stream = open("options.txt", "rt")
+    stream = open("options.txt", "rt", encoding = "utf-8")
     lower_date = stream.readline().rstrip()
     options["lower_date"] = datetime.strptime(lower_date, "%Y-%m-%d %H:%M:%S")
     upper_date = stream.readline().rstrip()
