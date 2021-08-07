@@ -36,6 +36,7 @@ byparam - lists all events in main calendar which are between dates, given in op
           Also it filters events by name. Choses events that contain give string in name
           It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
           Also searches all calendars for given user
+          Also accepts cyrillic letters
 cal_list - lists calendars for user
 ```
 **Functions**
