@@ -46,9 +46,9 @@ def get_options():
     # Those params are to be passed to function list_events_by_param
     # That function will list events, filtered by params
     
-def get_calendar_list():
+def get_calendar_dict():
     # This function retrieves list of calendars for user
-    # Returns list if calendar IDs
+    # Returns dict if calendar_ID: calenar_summary
     
 def del_all_calendar_events(service, options):
     # This function deletes all events before given date
