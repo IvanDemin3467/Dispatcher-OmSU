@@ -22,8 +22,15 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
-periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6}
-# translates hour of the day into period of the day
+# periods_dict translates hour of the day into period of the day
+periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6, "18" : 7}
+
+# timeteble stores all scheduled events (pairs)
+class Timetable:
+    def __init__(self):
+        self.timetable = [[["" for period in range(8)]
+                               for day in range(7)]
+                               for week in range(52)]
 
 def get_authenticated_service():
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
