@@ -23,6 +23,7 @@ API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
 periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6}
+# translates hour of the day into period of the day
 
 def get_authenticated_service():
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
@@ -77,6 +78,7 @@ def list_events_by_param(service, options):
     # (Cyrillic letters are accepted)
     # Also searches all calendars for given user
     # Prints name of calendar, name of event and event date-time
+    # Prints day of the week, week of the year and period of the day
     page_token = None
 
     # get calendar list
