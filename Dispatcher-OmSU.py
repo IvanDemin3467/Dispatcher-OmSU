@@ -116,17 +116,21 @@ def list_events_by_param(service, options):
                        event_start < options["upper_date"] and \
                        options["group"] in event_name:
                         print("********************")
-                        print("Calendar: ", calendar_dict[calendar])
+                        event_tutor = calendar_dict[calendar]
+                        print("Tutor: ", event_tutor)
                         print("Event_name: ", event_name)
                         print("Event_start: ", event_start)
-                        print("Week: ", int(event_start.strftime("%W").lstrip("0")))
-                        print("Day: ", event_start.strftime("%A"))
+                        week = int(event_start.strftime("%W").lstrip("0"))
+                        print("Week: ", week)
+                        day = event_start.strftime("%A")
+                        print("Day: ", day)
                         period = event_start.strftime("%H")
                         try:
                             period = periods_dict[period]
                         except:
                             period = "other"
                         print("Period: ", period, " ", event_start.strftime("%H:%M:%S"))
+                        timetable.put(event_tutor + " : " + event_name, period, day, week)
                     #print(event['id'])
                 except:
                     pass
