@@ -59,6 +59,9 @@ def del_all_calendar_events(service, options):
 ``` 
 **structures**
 ```
-periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6}
+periods_dict
     # translates hour of the day into period of the day
+
+class Timetable
+    # timeteble stores all scheduled events (pairs)
 ```
