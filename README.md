@@ -39,6 +39,7 @@ byparam - lists all events in main calendar which are between dates, given in op
           Also searches all calendars for given user
           Also accepts cyrillic letters
           Prints name of calendar, name of event and event date-time
+          Prints day of the week, week of the year and period of the day
 cal_list - lists calendars for user
 ```
 **Functions**
