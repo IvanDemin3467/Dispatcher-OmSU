@@ -27,10 +27,18 @@ periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6, "18"
 
 # timeteble stores all scheduled events (pairs)
 class Timetable:
-    def __init__(self):
+    def __init__(self, name="Other"):
         self.timetable = [[["" for period in range(8)]
                                for day in range(7)]
                                for week in range(52)]
+        self.name = name
+
+    def put(self, value, period, day, week):
+        self.timetable[week][day][period] = value
+
+    def get(self, period, day, week):
+        return self.timetable[week][day][period]
+
 
 def get_authenticated_service():
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
@@ -88,6 +96,9 @@ def list_events_by_param(service, options):
     # Prints day of the week, week of the year and period of the day
     page_token = None
 
+    # init timetable
+    timetable = Timetable(options["group"])
+
     # get calendar list
     calendar_dict = get_calendar_dict()
 
@@ -123,7 +134,7 @@ def list_events_by_param(service, options):
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
-
+    return timetable
 
 def get_options():
     # It reads parameters from file: lower_date, upper_date, group
