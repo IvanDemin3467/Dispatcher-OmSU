@@ -22,6 +22,8 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
+periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6}
+
 def get_authenticated_service():
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
     credentials = flow.run_console()
@@ -97,6 +99,14 @@ def list_events_by_param(service, options):
                         print("Calendar: ", calendar_dict[calendar])
                         print("Event_name: ", event_name)
                         print("Event_start: ", event_start)
+                        print("Week: ", int(event_start.strftime("%W").lstrip("0")))
+                        print("Day: ", event_start.strftime("%A"))
+                        period = event_start.strftime("%H")
+                        try:
+                            period = periods_dict[period]
+                        except:
+                            period = "other"
+                        print("Period: ", period, " ", event_start.strftime("%H:%M:%S"))
                     #print(event['id'])
                 except:
                     pass
