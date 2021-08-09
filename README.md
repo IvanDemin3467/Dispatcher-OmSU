@@ -64,4 +64,5 @@ periods_dict
 
 class Timetable
     # timeteble stores all scheduled events (pairs)
+    # .print() - prints timetable to the screen
 ```
