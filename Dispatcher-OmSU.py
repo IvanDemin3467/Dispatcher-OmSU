@@ -41,6 +41,7 @@ class Timetable:
     def print(self):
         # .print() - prints timetable to the screen
         for week in range(52):
+            empty_week = True
             to_print = ""
             to_print += "Week: " + str(week+1) + "\n"
             for day in range(7):
@@ -55,7 +56,9 @@ class Timetable:
                         to_print_day += "  "
                 if not empty_day:
                     to_print += to_print_day
-            print(to_print)
+                    empty_week = False
+            if not empty_week:
+                print(to_print)
                     
 
 
