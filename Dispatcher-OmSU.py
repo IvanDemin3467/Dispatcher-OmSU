@@ -27,10 +27,11 @@ periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6, "18"
 
 # timeteble stores all scheduled events (pairs)
 class Timetable:
-    def __init__(self):
+    def __init__(self, name="Other"):
         self.timetable = [[["" for period in range(7)]
                                for day in range(7)]
                                for week in range(52)]
+        self.name = name
 
     def put(self, value, period, day, week):
         self.timetable[week-1][day-1][period-1] = value
@@ -155,8 +156,8 @@ def list_events_by_param(service, options):
                         print("Period: ", period, " ", event_start.strftime("%H:%M:%S"))
                         data = event_tutor + " : " + event_name
                         print(data)
-                        timetable.put(data, period, day, week)
-                        print(timetable.get(period, day, week))
+                        timetable.put(value=data, period=period, day=day, week=week)
+                        print(timetable.get(period=period, day=day, week=week))
                     #print(event['id'])
                 except:
                     #pass
