@@ -62,6 +62,9 @@ def del_all_calendar_events(service, options):
 periods_dict
     # translates hour of the day into period of the day
 
+days_dict
+    # days_dict translates day of the week into locl name of the day
+
 class Timetable
     # timeteble stores all scheduled events (pairs)
     # .print() - prints timetable to the screen
