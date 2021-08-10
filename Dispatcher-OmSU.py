@@ -43,20 +43,21 @@ class Timetable:
         for week in range(52):
             empty_week = True
             to_print = ""
-            to_print += "Week: " + str(week+1) + "\n"
+            to_print += "######   Week: " + str(week+1) + "   ######\n"
+            to_print += "Periods: 1 2 3 4 5 6 7\n"
             for day in range(7):
-                to_print += "Day: " + str(day+1) + "\n"
-                to_print_day = "Periods: 1 2 3 4 5 6 7\n        "
+                to_print += "     " + days_dict[day] + ":"
                 empty_day = True
                 for period in range(7):
                     if self.timetable[week][day][period] != "":
-                        to_print_day += " *"
+                        to_print += " *"
                         empty_day = False
                     else:
-                        to_print_day += "  "
+                        to_print += "  "
+                to_print += " :" + days_dict[day] + "\n"
                 if not empty_day:
-                    to_print += to_print_day
                     empty_week = False
+            to_print += "         1 2 3 4 5 6 7\n"
             if not empty_week:
                 print(to_print)
                     
