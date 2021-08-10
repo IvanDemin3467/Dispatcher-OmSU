@@ -27,17 +27,36 @@ periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6, "18"
 
 # timeteble stores all scheduled events (pairs)
 class Timetable:
-    def __init__(self, name="Other"):
-        self.timetable = [[["" for period in range(8)]
+    def __init__(self):
+        self.timetable = [[["" for period in range(7)]
                                for day in range(7)]
                                for week in range(52)]
-        self.name = name
 
     def put(self, value, period, day, week):
-        self.timetable[week][day][period] = value
+        self.timetable[week-1][day-1][period-1] = value
 
     def get(self, period, day, week):
-        return self.timetable[week][day][period]
+        return self.timetable[week-1][day-1][period-1]
+
+    def print(self):
+        # .print() - prints timetable to the screen
+        for week in range(52):
+            to_print = ""
+            to_print += "Week: " + str(week+1) + "\n"
+            for day in range(7):
+                to_print += "Day: " + str(day+1) + "\n"
+                to_print_day = "Periods: 1 2 3 4 5 6 7\n        "
+                empty_day = True
+                for period in range(7):
+                    if self.timetable[week][day][period] != "":
+                        to_print_day += " *"
+                        empty_day = False
+                    else:
+                        to_print_day += "  "
+                if not empty_day:
+                    to_print += to_print_day
+            print(to_print)
+                    
 
 
 def get_authenticated_service():
@@ -130,14 +149,18 @@ def list_events_by_param(service, options):
                         except:
                             period = "other"
                         print("Period: ", period, " ", event_start.strftime("%H:%M:%S"))
-                        timetable.put(event_tutor + " : " + event_name, period, day, week)
+                        data = event_tutor + " : " + event_name
+                        print(data)
+                        timetable.put(data, period, day, week)
+                        print(timetable.get(period, day, week))
                     #print(event['id'])
                 except:
-                    pass
-                    #print("Some error")
+                    #pass
+                    print("Some error", event_tutor, event_name, period, day, week)
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
+    #timetable.print()
     return timetable
 
 def get_options():
