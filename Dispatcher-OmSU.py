@@ -23,7 +23,8 @@ API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
 # periods_dict translates hour of the day into period of the day
-periods_dict = {"08" : 1, "09" : 2, "11" : 3, "13" : 4, "15" : 5, "17" : 6, "18" : 7}
+periods_dict = {"08" : 1, "09" : 2, "10" : 2, "11" : 3, "12" : 3, "13" : 4,
+                "14" : 4, "15" : 5, "16" : 5, "17" : 6, "18" : 7, "19" : 7}
 # days_dict translates day of the week into locl name of the day
 days_dict = {0: "Пн", 1: "Вт", 2: "Ср", 3: "Чт", 4: "Пт", 5: "Сб", 6: "Вс"}
 
