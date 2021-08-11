@@ -59,16 +59,17 @@ class Timetable:
         complete_list = []
         for week in range(52):
             empty_week = True
-            complete_list.append([str(week+1), "", "", "", "", "", "", ""])
+            complete_list.append(["Неделя: " + str(week+1), "", "", "", "", "", "", ""])
             complete_list.append(["", "Пара 1", "Пара 2", "Пара 3", "Пара 4", "Пара 5", "Пара 6", "Пара 7"])
             for day in range(7):
                 row = []
                 row.append(days_dict[day])
                 for period in range(7):
                     value = self.timetable[week][day][period]
+                    if value == "": value = " "
+                    else: empty_week = False
                     row.append(value)
-                    if value != "":
-                        empty_week = False
+                    
                 complete_list.append(row)
             if empty_week:
                 del complete_list[-9:]
