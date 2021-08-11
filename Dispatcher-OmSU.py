@@ -71,46 +71,55 @@ def get_authenticated_service():
     credentials = flow.run_console()
     return build(API_SERVICE_NAME, API_VERSION, credentials = credentials)
 
-def list_calendar_events(service):
-    page_token = None
-    
-    while True:
-        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
-        #print(events)
-        for event in events['items']:
-            try:
-                print(event['summary'])
-                #print(event['id'])
-            except:
-                print("Some error with 'summary' field")
-        page_token = events.get('nextPageToken')
-        if not page_token:
-            break
+##def list_calendar_events(service):
+##    page_token = None
+##    
+##    while True:
+##        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
+##        #print(events)
+##        for event in events['items']:
+##            try:
+##                print(event['summary'])
+##                #print(event['id'])
+##            except:
+##                print("Some error with 'summary' field")
+##        page_token = events.get('nextPageToken')
+##        if not page_token:
+##            break
 
 
-def del_all_calendar_events(service, options):
-    # This function deletes all events before given date
-    # Also searches through all calendars for given user
-    page_token = None
+##def del_all_calendar_events(service, options):
+##    # This function deletes all events before given date
+##    # Also searches through all calendars for given user
+##    page_token = None
+##
+##    # get calendar list
+##    calendar_list = get_calendar_dict()
+##
+##    # del events
+##    for calendar in calendar_list:
+##        while True:
+##            events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
+##            for event in events['items']:
+##                try:
+##                    if event_start < options["lower_date"]:
+##                        service.events().delete(calendarId=calendar,
+##                                                eventId=event['id']).execute()
+##                except:
+##                    print("Can not delete")
+##            page_token = events.get('nextPageToken')
+##            if not page_token:
+##                break
 
-    # get calendar list
-    calendar_list = get_calendar_dict()
-
-    # del events
-    for calendar in calendar_list:
-        while True:
-            events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
-            for event in events['items']:
-                try:
-                    if event_start < options["lower_date"]:
-                        service.events().delete(calendarId=calendar,
-                                                eventId=event['id']).execute()
-                except:
-                    print("Can not delete")
-            page_token = events.get('nextPageToken')
-            if not page_token:
-                break
-
+def simple_print_event(event_tutor, event_name, event_start, week, day, period):
+    print("********************")
+    print("Tutor: ", event_tutor)
+    print("Event_name: ", event_name)
+    print("Event_start: ", event_start)
+    print("Week: ", week)
+    print("Day: ", day)
+    print("Period: ", period, " ", event_start.strftime("%H:%M:%S"))
+    return
 
 def list_events_by_param(service, options):
     # lists all events in main calendar which are between dates, given in options
@@ -141,28 +150,24 @@ def list_events_by_param(service, options):
                     if event_start > options["lower_date"] and \
                        event_start < options["upper_date"] and \
                        options["group"] in event_name:
-                        print("********************")
                         event_tutor = calendar_dict[calendar]
-                        print("Tutor: ", event_tutor)
-                        print("Event_name: ", event_name)
-                        print("Event_start: ", event_start)
                         week = int(event_start.strftime("%W").lstrip("0"))
-                        print("Week: ", week)
                         day = int(event_start.strftime("%w"))
-                        print("Day: ", day)
                         period = event_start.strftime("%H")
-                        try:
-                            period = periods_dict[period]
-                        except:
-                            period = "other"
-                        print("Period: ", period, " ", event_start.strftime("%H:%M:%S"))
-                        data = event_tutor + " : " + event_name
-                        print(data)
+                        try: period = periods_dict[period]
+                        except: period = "other"
                         
-                        try: timetable.put(value="*", period=period, day=day, week=week)
-                        except: print("error put")
-                        try: print(timetable.get(period=period, day=day, week=week))
-                        except: print("error get")
+                        # simply print valuable info on event
+                        # simple_print_event(event_tutor, event_name, event_start, week, day, period)
+
+                        data = event_tutor + " : " + event_name
+                        #print(data)
+                        try: timetable.put(value=data, period=period, day=day, week=week)
+                        except: print("error while put()")
+
+                        # get event that was just in timetable (for testing)
+                        #try: print(timetable.get(period=period, day=day, week=week))
+                        #except: print("error while get()")
                     #print(event['id'])
                 except:
                     pass
