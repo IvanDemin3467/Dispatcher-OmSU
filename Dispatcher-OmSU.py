@@ -11,17 +11,6 @@ from datetime import datetime
 
 pp = pprint.PrettyPrinter(indent=2)
 
-# The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
-# the OAuth 2.0 information for this application, including its client_id and
-# client_secret.
-CLIENT_SECRETS_FILE = "client_secret.json"
-
-# This access scope grants read-only access to the authenticated user's Calendar
-# account.
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-API_SERVICE_NAME = 'calendar'
-API_VERSION = 'v3'
-
 # periods_dict translates hour of the day into period of the day
 periods_dict = {"08" : 1, "09" : 2, "10" : 2, "11" : 3, "12" : 3, "13" : 4,
                 "14" : 4, "15" : 5, "16" : 5, "17" : 6, "18" : 7, "19" : 7}
@@ -64,13 +53,42 @@ class Timetable:
             to_print += "         1 2 3 4 5 6 7\n"
             if not empty_week:
                 print(to_print)
-                    
 
 
-def get_authenticated_service():
+def load_into_spreadsheet(service, options, timetable):
+    # Call the Sheets API
+    sheet = service.spreadsheets()
+    spreadsheet = {
+        'properties': {
+            'title': timetable.name +
+            datetime.now().strftime("-%Y-%m-%d-%H-%M-%S")
+        }
+    }
+    spreadsheet = service.spreadsheets().create(body=spreadsheet,
+                                        fields='spreadsheetId').execute()
+    print("https://docs.google.com/spreadsheets/d/" + 
+          spreadsheet.get('spreadsheetId'))
+
+
+def get_authenticated_services():
+    # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
+    # the OAuth 2.0 information for this application, including its client_id and
+    # client_secret.
+    CLIENT_SECRETS_FILE = "client_secret.json"
+
+    # This access scope grants read-only access to the authenticated user's Calendar
+    # account.
+    SCOPES = ['https://www.googleapis.com/auth/calendar',
+              'https://www.googleapis.com/auth/spreadsheets']
+    API_SERVICE_NAME = 'calendar'
+    API_VERSION = 'v3'
+
+    # Do auth
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
     credentials = flow.run_console()
-    return build(API_SERVICE_NAME, API_VERSION, credentials = credentials)
+    service_calendar = build('calendar', 'v3', credentials = credentials)
+    service_sheets = build('sheets', 'v4', credentials = credentials)
+    return service_calendar, service_sheets
 
 ##def list_calendar_events(service):
 ##    page_token = None
@@ -136,7 +154,7 @@ def list_events_by_param(service, options):
     timetable = Timetable(options["group"])
 
     # get calendar list
-    calendar_dict = get_calendar_dict()
+    calendar_dict = get_calendar_dict(service)
 
     # get events
     print("********************\nList of evens for group:", options["group"])
@@ -194,7 +212,7 @@ def get_options():
     stream.close()
     return options
 
-def get_calendar_dict():
+def get_calendar_dict(service):
     # This function retrieves list of calendars for user
     # Returns dict if calendar_ID: calenar_summary
     page_token = None
@@ -214,19 +232,20 @@ if __name__ == '__main__':
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    service = get_authenticated_service()
+    service_calendar, service_sheets = get_authenticated_services()
     while True:
         Input = input("Next task: ")
         options = get_options()
         if Input == "list" or Input == "List" or Input == "LIST":
-            list_calendar_events(service)
+            list_calendar_events(service_calendar)
         if Input == "byparam":
-            list_events_by_param(service, options)
+            timetable = list_events_by_param(service_calendar, options)
+            load_into_spreadsheet(service_sheets, options, timetable)
         if Input == "cal_list":
             get_calendar_list()
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             break
         if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
             if(input("Are you sure?") == "Yes"):
-                del_all_calendar_events(service, options)
-    service.close()
+                del_all_calendar_events(service_calendar, options)
+    service_calendar.close()
