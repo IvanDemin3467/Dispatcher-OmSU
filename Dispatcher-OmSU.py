@@ -54,9 +54,32 @@ class Timetable:
             if not empty_week:
                 print(to_print)
 
+    def get_list(self):
+        # .get_list() - prepares list to load into spreadsheet
+        complete_list = []
+        for week in range(52):
+            empty_week = True
+            complete_list.append([str(week+1), "", "", "", "", "", "", ""])
+            complete_list.append(["", "Пара 1", "Пара 2", "Пара 3", "Пара 4", "Пара 5", "Пара 6", "Пара 7"])
+            for day in range(7):
+                row = []
+                row.append(days_dict[day])
+                for period in range(7):
+                    value = self.timetable[week][day][period]
+                    row.append(value)
+                    if value != "":
+                        empty_week = False
+                complete_list.append(row)
+            if empty_week:
+                del complete_list[-9:]
+        return complete_list
+
 
 def load_into_spreadsheet(service, options, timetable):
-    # Call the Sheets API
+    # Input is: spreadsheet service, options dict and timetable object
+    # Call the Sheets API, creates new spreadsheet
+    # and loads data from timetable into spreadsheet
+    # Outputs link to created spreadsheet on the screen
     sheet = service.spreadsheets()
     spreadsheet = {
         'properties': {
@@ -66,8 +89,24 @@ def load_into_spreadsheet(service, options, timetable):
     }
     spreadsheet = service.spreadsheets().create(body=spreadsheet,
                                         fields='spreadsheetId').execute()
-    print("https://docs.google.com/spreadsheets/d/" + 
-          spreadsheet.get('spreadsheetId'))
+    spreadsheetId = spreadsheet.get('spreadsheetId')
+
+    range_name = "Лист1!A1"
+
+    values = timetable.get_list()
+    
+    body = {
+        'values': values
+    }
+    
+    value_input_option = "USER_ENTERED"
+    
+    result = service.spreadsheets().values().update(
+        spreadsheetId=spreadsheetId, range=range_name,
+        valueInputOption=value_input_option, body=body).execute()
+    print('{0} cells updated.'.format(result.get('updatedCells')))
+        
+    print("https://docs.google.com/spreadsheets/d/" + spreadsheetId)
 
 
 def get_authenticated_services():
