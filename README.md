@@ -69,3 +69,9 @@ class Timetable
     # timeteble stores all scheduled events (pairs)
     # .print() - prints timetable to the screen
 ```
+**usefull parameters for query**
+```
+Events: list
+calendarId - string from calendarList: List
+singleEvents = True - to expand recurring events into instances. False - to only return single one-off events and instances of recurring events, but not the underlying recurring events themselves. Optional. The default is False. 
+```
