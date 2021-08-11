@@ -52,17 +52,26 @@ def main():
 
     # Call the Sheets API
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                range=SAMPLE_RANGE_NAME).execute()
-    values = result.get('values', [])
+    spreadsheet = {
+        'properties': {
+            'title': "DTN-809"
+        }
+    }
+    spreadsheet = service.spreadsheets().create(body=spreadsheet,
+                                        fields='spreadsheetId').execute()
+    print('Spreadsheet ID: {0}'.format(spreadsheet.get('spreadsheetId')))
 
-    if not values:
-        print('No data found.')
-    else:
-        print('Name, Major:')
-        for row in values:
-            # Print columns A and E, which correspond to indices 0 and 4.
-            print('%s, %s' % (row[0], row[4]))
+##    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+##                                range=SAMPLE_RANGE_NAME).execute()
+##    values = result.get('values', [])
+##
+##    if not values:
+##        print('No data found.')
+##    else:
+##        print('Name, Major:')
+##        for row in values:
+##            # Print columns A and E, which correspond to indices 0 and 4.
+##            print('%s, %s' % (row[0], row[4]))
 
 if __name__ == '__main__':
     main()
