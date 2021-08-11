@@ -141,7 +141,7 @@ def list_events_by_param(service, options):
     print("********************\nList of evens for group:", options["group"])
     for calendar in calendar_dict:
         while True:
-            events = service.events().list(calendarId=calendar, pageToken=page_token).execute()
+            events = service.events().list(calendarId=calendar, pageToken=page_token, singleEvents = True).execute()
             for event in events['items']:
                 try:
                     event_name = event['summary']
