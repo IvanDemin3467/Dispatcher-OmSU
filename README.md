@@ -56,6 +56,12 @@ def get_calendar_dict():
 def del_all_calendar_events(service, options):
     # This function deletes all events before given date
     # Also searches through all calendars for given user
+
+def load_into_spreadsheet(service, options, timetable):
+    # Input is: spreadsheet service, options dict and timetable object
+    # Call the Sheets API, creates new spreadsheet
+    # and loads data from timetable into spreadsheet
+    # Outputs link to created spreadsheet on the screen
 ``` 
 **structures**
 ```
