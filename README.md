@@ -1,13 +1,32 @@
 # Dispatcher-OmSU
-Application for the dispatcher to work with the Google Calendar via Web API
+Application for the dispatcher to work with the Google Calendar via Web API.
+
+**Input files**
+It uses parameters given in file "options.txt". 
+
+The first line - first parameter is the start date. All events *preceding* it will be omitted.
+
+The second line - second parameter is the end date. All events *following* it will be omitted.
+
+The third and subsequent lines - third parameter is the list of strings to find (e. g. names of study groups). In only one string to find: All events without this string in caption will be omitted. If many lines - many strings to find - executes program many times making many output files.
+
+*Example input in options.txt*
+```
+2021-01-01 08:00:00
+2021-12-01 00:00:00
+ДТН-809
+```
+
+**Output files**
+
+Program creates google spreadsheet with timetable for given study group. If got many groups on input - it creates many timetables, one per group.
 
 **uses**
 ``` 
-import google.oauth2.credentials
-
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google_auth_oauthlib.flow import InstalledAppFlow
+google.oauth2.credentials
+googleapiclient.discovery
+googleapiclient.errors
+google_auth_oauthlib.flow
 ``` 
 
 Uses googleapiclient library from
@@ -25,10 +44,11 @@ There are a few setup steps you need to complete before you can use this library
 1.  If you don't already have a Google account, [sign up](https://www.google.com/accounts).
 2.  If you have never created a Google APIs Console project, read the [Managing Projects page](http://developers.google.com/console/help/managing-projects) and create a project in the [Google API Console](https://console.developers.google.com/).
 3.  [Install](http://developers.google.com/api-client-library/python/start/installation) the library.
-4.  To add new tester while app is in test mode -> go to your [Google APIs Console] (https://console.cloud.google.com/apis/credentials/consent)
+4.  To add new tester while app is in test mode -> go to your [Google APIs Console](https://console.cloud.google.com/apis/credentials/consent)
 
 **Features**
 ```
+## default behavior - silently run byparam
 list - lists all events in main calendar
 quit - quits program
 del -all - deletes all events in main calendar
@@ -40,6 +60,8 @@ byparam - lists all events in main calendar which are between dates, given in op
           Also accepts cyrillic letters
           Prints name of calendar, name of event and event date-time
           Prints day of the week, week of the year and period of the day
+          Creates google spreadsheet and loads timetable into it
+          Shows link to the created sheet on a screen
 cal_list - lists calendars for user
 ```
 **Functions**
