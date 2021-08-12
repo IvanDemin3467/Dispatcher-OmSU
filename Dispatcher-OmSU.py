@@ -1,5 +1,4 @@
-import os
-import pprint
+from os import environ
 
 import google.oauth2.credentials
 
@@ -9,7 +8,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 from datetime import datetime
 
-pp = pprint.PrettyPrinter(indent=2)
+#import pprint
+#pp = pprint.PrettyPrinter(indent=2)
 
 # periods_dict translates hour of the day into period of the day
 periods_dict = {"08" : 1, "09" : 2, "10" : 2, "11" : 3, "12" : 3, "13" : 4,
@@ -188,6 +188,8 @@ def list_events_by_param(service, options):
     # Also searches all calendars for given user
     # Prints name of calendar, name of event and event date-time
     # Prints day of the week, week of the year and period of the day
+    # Creates google spreadsheet and loads timetable into it
+    # Shows link to the created sheet on a screen
     page_token = None
 
     # init timetable
@@ -271,10 +273,14 @@ def get_calendar_dict(service):
 if __name__ == '__main__':
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     service_calendar, service_sheets = get_authenticated_services()
+    first_run = True
     while True:
-        Input = input("Next task: ")
+        if first_run:
+            Input = "byparam"
+        else:
+            Input = input("Next task: ")
         options = get_options()
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service_calendar)
