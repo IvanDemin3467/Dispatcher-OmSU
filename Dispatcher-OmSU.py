@@ -236,7 +236,8 @@ def list_events_by_param(service, options):
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
-    timetable.print()
+    if len(options["groups"]) == 1:
+        timetable.print()
     return timetable
 
 def get_options():
@@ -244,14 +245,20 @@ def get_options():
     # Those params are to be passed to function list_events_by_param
     # That function will list events, filtered by params
     options = {}
-    stream = open("options.txt", "rt", encoding = "utf-8")
-    lower_date = stream.readline().rstrip()
+    s = open("options.txt", "rt", encoding = "utf-8")
+    stream = list(s)
+    s.close()
+    lower_date = stream[0].rstrip()
     options["lower_date"] = datetime.strptime(lower_date, "%Y-%m-%d %H:%M:%S")
-    upper_date = stream.readline().rstrip()
+    upper_date = stream[1].rstrip()
     options["upper_date"] = datetime.strptime(upper_date, "%Y-%m-%d %H:%M:%S")
-    group = stream.readline().rstrip()
-    options["group"] = group
-    stream.close()
+
+    groups = []
+    for i in range(2, len(stream)):
+        nextline = stream[i].rstrip()
+        groups.append(nextline)
+    
+    options["groups"] = groups
     return options
 
 def get_calendar_dict(service):
@@ -279,14 +286,17 @@ if __name__ == '__main__':
     while True:
         if first_run:
             Input = "byparam"
+            first_run = False
         else:
             Input = input("Next task: ")
         options = get_options()
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service_calendar)
         if Input == "byparam":
-            timetable = list_events_by_param(service_calendar, options)
-            load_into_spreadsheet(service_sheets, options, timetable)
+            for group in options["groups"]:
+                options["group"] = group
+                timetable = list_events_by_param(service_calendar, options)
+                load_into_spreadsheet(service_sheets, options, timetable)
         if Input == "cal_list":
             get_calendar_list()
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
