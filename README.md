@@ -2,6 +2,7 @@
 Application for the dispatcher to work with the Google Calendar via Web API.
 
 **Input files**
+
 It uses parameters given in file "options.txt". 
 
 The first line - first parameter is the start date. All events *preceding* it will be omitted.
@@ -15,6 +16,8 @@ The third and subsequent lines - third parameter is the list of strings to find 
 2021-01-01 08:00:00
 2021-12-01 00:00:00
 ДТН-809
+ДТН-909
+ДАН-909
 ```
 
 **Output files**
