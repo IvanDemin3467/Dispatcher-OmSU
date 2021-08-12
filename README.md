@@ -61,8 +61,8 @@ byparam - lists all events in main calendar which are between dates, given in op
           It is implemented to get all events for given group e.g. DAN-909, DTN-809 etc.
           Also searches all calendars for given user
           Also accepts cyrillic letters
-          Prints name of calendar, name of event and event date-time
-          Prints day of the week, week of the year and period of the day
+          Pretty prints timetable if there is only one group in input
+          Ommits pretty print if there are many groups on input
           Creates google spreadsheet and loads timetable into it
           Shows link to the created sheet on a screen
 cal_list - lists calendars for user
