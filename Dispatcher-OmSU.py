@@ -199,7 +199,7 @@ def list_events_by_param(service, options):
     calendar_dict = get_calendar_dict(service)
 
     # get events
-    print("********************\nList of evens for group:", options["group"])
+    print("********************\nWorking on: timetable for group:", options["group"])
     for calendar in calendar_dict:
         while True:
             events = service.events().list(calendarId=calendar, pageToken=page_token, singleEvents = True).execute()
