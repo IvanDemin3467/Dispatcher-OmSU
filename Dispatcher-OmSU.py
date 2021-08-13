@@ -192,14 +192,20 @@ def list_events_by_param(service, options):
     # Shows link to the created sheet on a screen
     page_token = None
 
+    # init timetables
+    list_timetable = []
+    for group in options["groups"]:
+        timetable = Timetable(group)
+        list_timetable.append(timetable)
+    
     # init timetable
-    timetable = Timetable(options["group"])
+    # timetable = Timetable(options["group"])
 
     # get calendar list
     calendar_dict = get_calendar_dict(service)
 
     # get events
-    print("********************\nWorking on: timetable for group:", options["group"])
+    # print("********************\nWorking on: timetable for group:", options["group"])
     for calendar in calendar_dict:
         while True:
             events = service.events().list(calendarId=calendar, pageToken=page_token, singleEvents = True).execute()
@@ -208,28 +214,29 @@ def list_events_by_param(service, options):
                     event_name = event['summary']
                     event_start = datetime.strptime(event['start']['dateTime'],
                                                     "%Y-%m-%dT%H:%M:%S+06:00")
-                    if event_start > options["lower_date"] and \
-                       event_start < options["upper_date"] and \
-                       options["group"] in event_name:
-                        event_tutor = calendar_dict[calendar]
-                        week = int(event_start.strftime("%W").lstrip("0"))
-                        day = int(event_start.strftime("%w"))
-                        period = event_start.strftime("%H")
-                        try: period = periods_dict[period]
-                        except: period = "other"
-                        
-                        # simply print valuable info on event
-                        # simple_print_event(event_tutor, event_name, event_start, week, day, period)
+                    for timetable in list_timetable:
+                        if event_start > options["lower_date"] and \
+                           event_start < options["upper_date"] and \
+                           timetable.name in event_name:
+                            event_tutor = calendar_dict[calendar]
+                            week = int(event_start.strftime("%W").lstrip("0"))
+                            day = int(event_start.strftime("%w"))
+                            period = event_start.strftime("%H")
+                            try: period = periods_dict[period]
+                            except: period = "other"
+                            
+                            # simply print valuable info on event
+                            # simple_print_event(event_tutor, event_name, event_start, week, day, period)
 
-                        data = event_tutor + " : " + event_name
-                        #print(data)
-                        try: timetable.put(value=data, period=period, day=day, week=week)
-                        except: print("error while put()")
+                            data = event_tutor + " : " + event_name
+                            #print(data)
+                            try: timetable.put(value=data, period=period, day=day, week=week)
+                            except: print("error while put()")
 
-                        # get event that was just in timetable (for testing)
-                        #try: print(timetable.get(period=period, day=day, week=week))
-                        #except: print("error while get()")
-                    #print(event['id'])
+                            # get event that was just in timetable (for testing)
+                            #try: print(timetable.get(period=period, day=day, week=week))
+                            #except: print("error while get()")
+                        #print(event['id'])
                 except:
                     pass
                     #print("Some error", event_tutor, event_name, period, day, week)
@@ -238,6 +245,12 @@ def list_events_by_param(service, options):
                 break
     if len(options["groups"]) == 1:
         timetable.print()
+
+    ##
+    for timetable in list_timetable:
+        print(timetable.name)
+        load_into_spreadsheet(service_sheets, options, timetable)
+    
     return timetable
 
 def get_options():
@@ -293,10 +306,7 @@ if __name__ == '__main__':
         if Input == "list" or Input == "List" or Input == "LIST":
             list_calendar_events(service_calendar)
         if Input == "byparam":
-            for group in options["groups"]:
-                options["group"] = group
-                timetable = list_events_by_param(service_calendar, options)
-                load_into_spreadsheet(service_sheets, options, timetable)
+            timetable = list_events_by_param(service_calendar, options)
         if Input == "cal_list":
             get_calendar_list()
         if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
