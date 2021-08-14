@@ -107,7 +107,11 @@ def load_into_spreadsheet(service, list_timetable):
             valueInputOption=value_input_option, body=body).execute()
         
         print('{0} cells updated.'.format(result.get('updatedCells')))
-        print("https://docs.google.com/spreadsheets/d/" + spreadsheetId)
+        url = "https://docs.google.com/spreadsheets/d/" + spreadsheetId
+        print(url)
+        
+        # Open in Google Chrome
+        webbrowser.get('chrome').open(url)
 
 
 def get_authenticated_services():
@@ -126,6 +130,7 @@ def get_authenticated_services():
     # Do auth
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
 
+    # Open in Google Chrome
     auth_url, _ = flow.authorization_url(prompt='consent')
     auth_url += "&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
     webbrowser.register('chrome',
