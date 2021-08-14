@@ -76,39 +76,36 @@ class Timetable:
         return complete_list
 
 
-def load_into_spreadsheet(service, options, timetable):
+def load_into_spreadsheet(service, options, list_timetable):
     # Input is: spreadsheet service, options dict and timetable object
     # Call the Sheets API, creates new spreadsheet
     # and loads data from timetable into spreadsheet
     # Outputs link to created spreadsheet on the screen
-    print("********************\nWorking on: timetable for group:", timetable.name)
-    sheet = service.spreadsheets()
-    spreadsheet = {
-        'properties': {
-            'title': timetable.name +
-            datetime.now().strftime("-%Y-%m-%d-%H-%M-%S")
+    for timetable in list_timetable:
+        print("********************\nWorking on: timetable for group:", timetable.name)
+        sheet = service.spreadsheets()
+        spreadsheet = {
+            'properties': {
+                'title': timetable.name +
+                datetime.now().strftime("-%Y-%m-%d-%H-%M-%S")
+            }
         }
-    }
-    spreadsheet = service.spreadsheets().create(body=spreadsheet,
-                                        fields='spreadsheetId').execute()
-    spreadsheetId = spreadsheet.get('spreadsheetId')
-
-    range_name = "Лист1!A1"
-
-    values = timetable.get_list()
-    
-    body = {
-        'values': values
-    }
-    
-    value_input_option = "USER_ENTERED"
-    
-    result = service.spreadsheets().values().update(
-        spreadsheetId=spreadsheetId, range=range_name,
-        valueInputOption=value_input_option, body=body).execute()
-    print('{0} cells updated.'.format(result.get('updatedCells')))
+        spreadsheet = service.spreadsheets().create(body=spreadsheet,
+                                            fields='spreadsheetId').execute()
+        spreadsheetId = spreadsheet.get('spreadsheetId')
+        range_name = "Лист1!A1"
+        values = timetable.get_list()
+            body = {
+            'values': values
+        }
+        value_input_option = "USER_ENTERED"
         
-    print("https://docs.google.com/spreadsheets/d/" + spreadsheetId)
+        result = service.spreadsheets().values().update(
+            spreadsheetId=spreadsheetId, range=range_name,
+            valueInputOption=value_input_option, body=body).execute()
+        
+        print('{0} cells updated.'.format(result.get('updatedCells')))
+        print("https://docs.google.com/spreadsheets/d/" + spreadsheetId)
 
 
 def get_authenticated_services():
@@ -206,7 +203,8 @@ def list_events_by_param(service, options):
     calendar_dict = get_calendar_dict(service)
 
     # get events
-    print("********************\nWorking on: timetable for group:", options["group"])
+    print("********************\nWorking on: get all events from all calendars)
+    count_events = 0
     for calendar in calendar_dict:
         while True:
             events = service.events().list(calendarId=calendar, pageToken=page_token, singleEvents = True).execute()
@@ -219,6 +217,7 @@ def list_events_by_param(service, options):
                         if event_start > options["lower_date"] and \
                            event_start < options["upper_date"] and \
                            timetable.name in event_name:
+                            count_events += 1
                             event_tutor = calendar_dict[calendar]
                             week = int(event_start.strftime("%W").lstrip("0"))
                             day = int(event_start.strftime("%w"))
@@ -244,6 +243,8 @@ def list_events_by_param(service, options):
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
+    #print(f"Got {count_events} events for {len(list_timetable)} groups")
+
     if len(options["groups"]) == 1:
         timetable.print()
 
@@ -310,7 +311,8 @@ if __name__ == '__main__':
             if Input == "list" or Input == "List" or Input == "LIST":
                 list_calendar_events(service_calendar)
             if Input == "byparam":
-                timetable = list_events_by_param(service_calendar, options)
+                list_timetable = list_events_by_param(service_calendar, options)
+                load_into_spreadsheet(service_sheets, options, list_timetable)
             if Input == "cal_list":
                 get_calendar_list()
             if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
