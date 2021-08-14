@@ -111,7 +111,8 @@ def load_into_spreadsheet(service, list_timetable):
         print(url)
         
         # Open in Google Chrome
-        webbrowser.get('chrome').open(url)
+        # webbrowser.get('chrome').open(url)
+        webbrowser.get(None).open(url)
 
 
 def get_authenticated_services():
@@ -136,7 +137,10 @@ def get_authenticated_services():
     webbrowser.register('chrome',
 	None,
 	webbrowser.BackgroundBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"))
-    webbrowser.get('chrome').open(auth_url)
+    # webbrowser.get('chrome').open(auth_url)
+    webbrowser.get(None).open(auth_url)
+
+    # webbrowser.get(using='google-chrome').open(auth_url)
     
     
     credentials = flow.run_console()
