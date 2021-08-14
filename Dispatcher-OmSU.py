@@ -76,7 +76,7 @@ class Timetable:
         return complete_list
 
 
-def load_into_spreadsheet(service, options, list_timetable):
+def load_into_spreadsheet(service, list_timetable):
     # Input is: spreadsheet service, options dict and timetable object
     # Call the Sheets API, creates new spreadsheet
     # and loads data from timetable into spreadsheet
@@ -95,7 +95,7 @@ def load_into_spreadsheet(service, options, list_timetable):
         spreadsheetId = spreadsheet.get('spreadsheetId')
         range_name = "Лист1!A1"
         values = timetable.get_list()
-            body = {
+        body = {
             'values': values
         }
         value_input_option = "USER_ENTERED"
@@ -203,7 +203,7 @@ def list_events_by_param(service, options):
     calendar_dict = get_calendar_dict(service)
 
     # get events
-    print("********************\nWorking on: get all events from all calendars)
+    print("********************\nWorking on: get all events from all calendars")
     count_events = 0
     for calendar in calendar_dict:
         while True:
@@ -243,17 +243,17 @@ def list_events_by_param(service, options):
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
-    #print(f"Got {count_events} events for {len(list_timetable)} groups")
+    print(f"Got {count_events} events for {len(list_timetable)} groups")
 
     if len(options["groups"]) == 1:
-        timetable.print()
+        list_timetable[0].print()
 
-    ##
-    for timetable in list_timetable:
-        print(timetable.name)
-        load_into_spreadsheet(service_sheets, options, timetable)
+##    ##
+##    for timetable in list_timetable:
+##        print(timetable.name)
+##        load_into_spreadsheet(service_sheets, options, timetable)
     
-    return timetable
+    return list_timetable
 
 def get_options():
     # It reads parameters from file: lower_date, upper_date, group
@@ -312,7 +312,7 @@ if __name__ == '__main__':
                 list_calendar_events(service_calendar)
             if Input == "byparam":
                 list_timetable = list_events_by_param(service_calendar, options)
-                load_into_spreadsheet(service_sheets, options, list_timetable)
+                load_into_spreadsheet(service_sheets, list_timetable)
             if Input == "cal_list":
                 get_calendar_list()
             if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
@@ -322,9 +322,11 @@ if __name__ == '__main__':
                     del_all_calendar_events(service_calendar, options)
         except HttpError as e:
             print(e)
-            print("retry")
+            print("/n RETRY")
             first_run = True
-        except: print("some non HttpError in main module")
+        except BaseException as e:
+            print("some non HttpError in main module")
+            print(e)
     service_calendar.close()
     service_sheets.close()
     
