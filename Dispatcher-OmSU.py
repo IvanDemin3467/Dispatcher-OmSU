@@ -81,6 +81,7 @@ def load_into_spreadsheet(service, options, timetable):
     # Call the Sheets API, creates new spreadsheet
     # and loads data from timetable into spreadsheet
     # Outputs link to created spreadsheet on the screen
+    print("********************\nWorking on: timetable for group:", timetable.name)
     sheet = service.spreadsheets()
     spreadsheet = {
         'properties': {
@@ -205,7 +206,7 @@ def list_events_by_param(service, options):
     calendar_dict = get_calendar_dict(service)
 
     # get events
-    # print("********************\nWorking on: timetable for group:", options["group"])
+    print("********************\nWorking on: timetable for group:", options["group"])
     for calendar in calendar_dict:
         while True:
             events = service.events().list(calendarId=calendar, pageToken=page_token, singleEvents = True).execute()
