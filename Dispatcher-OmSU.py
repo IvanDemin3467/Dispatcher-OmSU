@@ -294,7 +294,8 @@ if __name__ == '__main__':
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
     environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    service_calendar, service_sheets = get_authenticated_services()
+    try: service_calendar, service_sheets = get_authenticated_services()
+    except: print("get_authenticated_services() FAILED")
     first_run = True
     while True:
         if first_run:
@@ -302,16 +303,25 @@ if __name__ == '__main__':
             first_run = False
         else:
             Input = input("Next task: ")
-        options = get_options()
-        if Input == "list" or Input == "List" or Input == "LIST":
-            list_calendar_events(service_calendar)
-        if Input == "byparam":
-            timetable = list_events_by_param(service_calendar, options)
-        if Input == "cal_list":
-            get_calendar_list()
-        if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
-            break
-        if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
-            if(input("Are you sure?") == "Yes"):
-                del_all_calendar_events(service_calendar, options)
+        try: options = get_options()
+        except: print("get_options() FAILED")
+        try:
+            if Input == "list" or Input == "List" or Input == "LIST":
+                list_calendar_events(service_calendar)
+            if Input == "byparam":
+                timetable = list_events_by_param(service_calendar, options)
+            if Input == "cal_list":
+                get_calendar_list()
+            if Input == "q" or Input == "quit" or Input == "Quit" or Input == "QUIT":
+                break
+            if Input == "del -all" or Input == "quit" or Input == "Quit" or Input == "QUIT":
+                if(input("Are you sure? ") == "Yes"):
+                    del_all_calendar_events(service_calendar, options)
+        except HttpError as e:
+            print(e)
+            print("retry")
+            first_run = True
+        except: print("some non HttpError in main module")
     service_calendar.close()
+    service_sheets.close()
+    
