@@ -87,6 +87,17 @@ def load_into_spreadsheet(service, options, timetable):
     # Call the Sheets API, creates new spreadsheet
     # and loads data from timetable into spreadsheet
     # Outputs link to created spreadsheet on the screen
+    
+def get_authenticated_services():
+    # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
+    # the OAuth 2.0 information for this application, including its client_id and
+    # client_secret.
+    # opens in web browser
+    webbrowser.register('chrome',
+	None,
+	webbrowser.BackgroundBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"))
+    # webbrowser.get('chrome').open(auth_url)
+    webbrowser.get(None).open(auth_url)
 ``` 
 **structures**
 ```
