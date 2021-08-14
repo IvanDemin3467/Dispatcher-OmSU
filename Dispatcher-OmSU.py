@@ -8,6 +8,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 from datetime import datetime
 
+import webbrowser
+
 #import pprint
 #pp = pprint.PrettyPrinter(indent=2)
 
@@ -123,6 +125,15 @@ def get_authenticated_services():
 
     # Do auth
     flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+
+    auth_url, _ = flow.authorization_url(prompt='consent')
+    auth_url += "&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob"
+    webbrowser.register('chrome',
+	None,
+	webbrowser.BackgroundBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"))
+    webbrowser.get('chrome').open(auth_url)
+    
+    
     credentials = flow.run_console()
     service_calendar = build('calendar', 'v3', credentials = credentials)
     service_sheets = build('sheets', 'v4', credentials = credentials)
