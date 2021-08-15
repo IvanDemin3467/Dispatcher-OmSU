@@ -43,6 +43,9 @@ https://github.com/googleapis/google-api-python-client
 ```
 pip install google-api-python-client
 pip install selenium
+
+chromedriver
+https://sites.google.com/chromium.org/driver/
 ```
 
 **Setup**
