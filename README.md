@@ -30,6 +30,10 @@ google.oauth2.credentials
 googleapiclient.discovery
 googleapiclient.errors
 google_auth_oauthlib.flow
+
+os
+datetime
+webbrowser
 ``` 
 
 Uses googleapiclient library from
@@ -38,6 +42,7 @@ https://github.com/googleapis/google-api-python-client
 **Requres**
 ```
 pip install google-api-python-client
+pip install selenium
 ```
 
 **Setup**
