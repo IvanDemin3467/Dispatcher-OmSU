@@ -16,6 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import StaleElementReferenceException
 
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
 # the OAuth 2.0 information for this application, including its client_id and
@@ -56,24 +57,28 @@ elem.send_keys("sometimethumbnoractual")
 elem.send_keys(Keys.RETURN)
 
 wait = WebDriverWait(driver, 10)
-try: element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "VfPpkd-vQzf8d")))
-except: print("Too long when waiting for VfPpkd-vQzf8d")
+while True:
+    try:
+        element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "VfPpkd-vQzf8d")))
+        elem = driver.find_element_by_xpath('//*[@id="view_container"]/div/div/div[2]/div/div[2]/div/div[2]/div/div/button/span')
+        elem.click()
+        break
+    except StaleElementReferenceException as e:
+        print(e)
+    except: print("Too long when waiting for VfPpkd-vQzf8d")
 
-driver.implicitly_wait(10)
-#Продолжить
-elem = driver.find_element_by_xpath('//*[@id="view_container"]/div/div/div[2]/div/div[2]/div/div[2]/div/div/button/span')
 # elem = driver.find_element_by_class_name('VfPpkd-vQzf8d')
-print("VfPpkd-vQzf8d found")
+print("VfPpkd-vQzf8d clicked")
 
 
 
-actions = ActionChains(driver)
-actions.move_to_element(elem)
-actions.pause(1)
-actions.click_and_hold(elem)
-actions.pause(1)
-actions.release(elem)
-actions.perform()
+##actions = ActionChains(driver)
+##actions.move_to_element(elem)
+##actions.pause(1)
+##actions.click_and_hold(elem)
+##actions.pause(1)
+##actions.release(elem)
+##actions.perform()
 
 #driver.close()
 
