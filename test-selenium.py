@@ -5,6 +5,7 @@ import google.oauth2.credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import Flow
 
 from datetime import datetime
 
@@ -20,6 +21,7 @@ from selenium.common.exceptions import StaleElementReferenceException
 
 import win32clipboard
 import time
+from pynput.keyboard import Key, Controller
 
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
 # the OAuth 2.0 information for this application, including its client_id and
@@ -35,6 +37,8 @@ API_VERSION = 'v3'
 
 # Do auth
 flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+##flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES,
+##                                     redirect_uri='urn:ietf:wg:oauth:2.0:oob')
 
 # Open in Google Chrome
 auth_url, _ = flow.authorization_url(prompt='consent')
@@ -141,8 +145,9 @@ print("Got code: ", from_clipboard)
 
 driver.close()
 
-flow.run_console()
-flow.fetch_token(code=from_clipboard)
+flow.run_local_server()
+
+# flow.fetch_token(code=from_clipboard)
 
 ##actions = ActionChains(driver)
 ##actions.move_to_element(elem)
@@ -152,7 +157,13 @@ flow.fetch_token(code=from_clipboard)
 ##actions.release(elem)
 ##actions.perform()
 
+##keyboard = Controller()
 
+##with keyboard.pressed(Key.alt):
+##    keyboard.press(Key.tab)
+##    keyboard.release(Key.tab)
+
+##keyboard.type(from_clipboard)
 
 credentials = flow.credentials
 service_calendar = build('calendar', 'v3', credentials = credentials)
