@@ -138,7 +138,7 @@ def get_authenticated_services():
 	None,
 	webbrowser.BackgroundBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"))
     # webbrowser.get('chrome').open(auth_url)
-    webbrowser.get(None).open(auth_url)
+    # webbrowser.get(None).open(auth_url)
 
 ##    from selenium import webdriver
 ##    driver = webdriver.Chrome()
@@ -149,7 +149,7 @@ def get_authenticated_services():
 ##    assert "No results found." not in driver.page_source
 ##    driver.close()
     
-    credentials = flow.run_console()
+    credentials = flow.run_local_server()
     service_calendar = build('calendar', 'v3', credentials = credentials)
     service_sheets = build('sheets', 'v4', credentials = credentials)
     return service_calendar, service_sheets
@@ -282,7 +282,8 @@ def list_events_by_param(service, options):
     return list_timetable
 
 def list_events_by_guest(service, options):
-    # lists all events in main calendar which are between dates, given in options
+    # Same as byparam, but makes timetable for given guest (tutor)
+    # lists all events in main calendar which are between two dates, given in options
     # Also it filters events by name of guest (tutor)
     page_token = None
 
