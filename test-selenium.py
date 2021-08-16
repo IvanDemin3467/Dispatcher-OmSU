@@ -56,6 +56,8 @@ elem.clear()
 elem.send_keys("sometimethumbnoractual")
 elem.send_keys(Keys.RETURN)
 
+## Продолжить
+
 wait = WebDriverWait(driver, 10)
 while True:
     try:
@@ -65,10 +67,68 @@ while True:
         break
     except StaleElementReferenceException as e:
         print(e)
-    except: print("Too long when waiting for VfPpkd-vQzf8d")
+    except: print("Waiting too long for Продолжить")
 
-# elem = driver.find_element_by_class_name('VfPpkd-vQzf8d')
 print("VfPpkd-vQzf8d clicked")
+
+## Принять 1
+
+while True:
+    try:
+        element = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="selectioni1"]')))
+        elem = driver.find_element_by_xpath('//*[@id="selectioni1"]')
+        elem.click()
+        break
+    except StaleElementReferenceException as e:
+        print(e)
+    except: print("Waiting too long for Принять 1")
+
+print("Принять 1 clicked")
+
+## Принять 2
+
+while True:
+    try:
+        element = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="selectioni4"]')))
+        elem = driver.find_element_by_xpath('//*[@id="selectioni4"]')
+        elem.click()
+        break
+    except StaleElementReferenceException as e:
+        print(e)
+    except: print("Waiting too long for Принять 2")
+
+print("Принять 2 clicked")
+
+## Продолжить после принятия
+
+while True:
+    try:
+        elem = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="submit_approve_access"]/div/button"]')))
+        #elem = driver.find_element_by_xpath('//*[@id="submit_approve_access"]/div/button')
+        elem.click()
+        break
+    except StaleElementReferenceException as e:
+        print(e)
+    except: print("Waiting too long for Продолжить после принятия")
+
+print("Продолжить после принятия clicked")
+
+
+## Скопировать
+
+while True:
+    try:
+        elem = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/span/div/div/button')))
+        #elem = driver.find_element_by_xpath('//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/span/div/div/button')
+        elem.click()
+        break
+    except StaleElementReferenceException as e:
+        print(e)
+    except: print("Waiting too long for Скопировать")
+
+print("Скопировать clicked")
+
+
 
 
 
