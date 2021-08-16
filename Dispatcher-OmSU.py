@@ -84,7 +84,7 @@ def load_into_spreadsheet(service, list_timetable):
     # and loads data from timetable into spreadsheet
     # Outputs link to created spreadsheet on the screen
     for timetable in list_timetable:
-        print("********************\nWorking on: timetable for group:", timetable.name)
+        print("********************\nWorking on: timetable for:", timetable.name)
         sheet = service.spreadsheets()
         spreadsheet = {
             'properties': {
@@ -140,8 +140,14 @@ def get_authenticated_services():
     # webbrowser.get('chrome').open(auth_url)
     webbrowser.get(None).open(auth_url)
 
-    # webbrowser.get(using='google-chrome').open(auth_url)
-    
+##    from selenium import webdriver
+##    driver = webdriver.Chrome()
+##    driver.get(auth_url)
+##    assert "Вход" in driver.title
+##    continue_link = driver.find_element_by_name('deminie@college.omsu.ru')
+##    driver.tap(continue_link)
+##    assert "No results found." not in driver.page_source
+##    driver.close()
     
     credentials = flow.run_console()
     service_calendar = build('calendar', 'v3', credentials = credentials)
@@ -275,6 +281,78 @@ def list_events_by_param(service, options):
     
     return list_timetable
 
+def list_events_by_guest(service, options):
+    # lists all events in main calendar which are between dates, given in options
+    # Also it filters events by name of guest (tutor)
+    page_token = None
+
+    try: tutors = get_tutors()
+    except: print("get_tutors() FAILED")
+
+    # init timetables
+    list_timetable = []
+    for tutor in tutors:
+        timetable = Timetable(tutor)
+        list_timetable.append(timetable)
+    
+
+    # get calendar list
+    calendar_dict = get_calendar_dict(service)
+
+    # get events
+    print("********************\nWorking on: get all events from all calendars")
+    count_events = 0
+    for calendar in calendar_dict:
+        while True:
+            events = service.events().list(calendarId=calendar, pageToken=page_token, singleEvents = True).execute()
+            for event in events['items']:
+                try:
+                    event_name = event['summary']
+                    event_start = datetime.strptime(event['start']['dateTime'],
+                                                    "%Y-%m-%dT%H:%M:%S+06:00")
+                    for timetable in list_timetable:
+                        if event_start > options["lower_date"] and \
+                           event_start < options["upper_date"]:
+                            attendees = event['attendees']
+                            for attendee in attendees:
+                                if attendee['email'] == timetable.name:
+                                    count_events += 1
+                                    event_tutor = calendar_dict[calendar]
+                                    week = int(event_start.strftime("%W").lstrip("0"))
+                                    day = int(event_start.strftime("%w"))
+                                    period = event_start.strftime("%H")
+                                    try: period = periods_dict[period]
+                                    except: period = "other"
+                                    data = event_name
+                                    #print(data)
+                                    try: timetable.put(value=data, period=period, day=day, week=week)
+                                    except: print("error while put()")
+                except:
+                    pass
+
+            page_token = events.get('nextPageToken')
+            if not page_token:
+                break
+    print(f"Got {count_events} events for {len(list_timetable)} groups")
+
+    if len(options["groups"]) == 1:
+        list_timetable[0].print()
+    return list_timetable
+
+def get_tutors():
+    # It reads parameters from file: 
+    # Those params are to be passed to function list_events_by_guest
+    # That function will list events, filtered by params
+    options = {}
+    s = open("tutors.txt", "rt", encoding = "utf-8")
+    stream = list(s)
+    s.close()
+    tutors_list = []
+    for i in range(0, len(stream)):
+        nextline = stream[i].rstrip()
+        tutors_list.append(nextline)
+    return tutors_list
+
 def get_options():
     # It reads parameters from file: lower_date, upper_date, group
     # Those params are to be passed to function list_events_by_param
@@ -321,7 +399,7 @@ if __name__ == '__main__':
     first_run = True
     while True:
         if first_run:
-            Input = "byparam"
+            Input = "byguest"
             first_run = False
         else:
             Input = input("Next task: ")
@@ -332,6 +410,9 @@ if __name__ == '__main__':
                 list_calendar_events(service_calendar)
             if Input == "byparam":
                 list_timetable = list_events_by_param(service_calendar, options)
+                load_into_spreadsheet(service_sheets, list_timetable)
+            if Input == "byguest":
+                list_timetable = list_events_by_guest(service_calendar, options)
                 load_into_spreadsheet(service_sheets, list_timetable)
             if Input == "cal_list":
                 get_calendar_list()
