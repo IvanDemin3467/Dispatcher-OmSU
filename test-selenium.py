@@ -18,6 +18,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import StaleElementReferenceException
 
+import win32clipboard
+import time
+
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
 # the OAuth 2.0 information for this application, including its client_id and
 # client_secret.
@@ -103,7 +106,7 @@ print("Принять 2 clicked")
 
 while True:
     try:
-        elem = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="submit_approve_access"]/div/button"]')))
+        elem = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="submit_approve_access"]/div/button')))
         #elem = driver.find_element_by_xpath('//*[@id="submit_approve_access"]/div/button')
         elem.click()
         break
@@ -128,9 +131,18 @@ while True:
 
 print("Скопировать clicked")
 
+time.sleep(1)
 
+win32clipboard.OpenClipboard()
+from_clipboard = win32clipboard.GetClipboardData()
+win32clipboard.CloseClipboard()
 
+print("Got code: ", from_clipboard)
 
+driver.close()
+
+flow.run_console()
+flow.fetch_token(code=from_clipboard)
 
 ##actions = ActionChains(driver)
 ##actions.move_to_element(elem)
@@ -140,8 +152,8 @@ print("Скопировать clicked")
 ##actions.release(elem)
 ##actions.perform()
 
-#driver.close()
 
-credentials = flow.run_console()
+
+credentials = flow.credentials
 service_calendar = build('calendar', 'v3', credentials = credentials)
 service_sheets = build('sheets', 'v4', credentials = credentials)
