@@ -1,7 +1,7 @@
 # Dispatcher-OmSU
 Application for the dispatcher to work with the Google Calendar via Web API.
 
-**Input files**
+**Input files: options.txt**
 
 It uses parameters given in file "options.txt". 
 
@@ -73,6 +73,8 @@ byparam - lists all events in main calendar which are between dates, given in op
           Ommits pretty print if there are many groups on input
           Creates google spreadsheet and loads timetable into it
           Shows link to the created sheet on a screen
+byguest - Same as byparam, but makes timetable for given guest (tutor)  
+	  Also lists all events in main calendar which are between two dates, given in options
 cal_list - lists calendars for user
 ```
 **Functions**
@@ -106,6 +108,9 @@ def get_authenticated_services():
 	webbrowser.BackgroundBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"))
     # webbrowser.get('chrome').open(auth_url)
     webbrowser.get(None).open(auth_url)
+    
+def list_events_by_guest(service, options)
+    # Makes timetable for given guest (tutor)
 ``` 
 **structures**
 ```
