@@ -20,6 +20,17 @@ The third and subsequent lines - third parameter is the list of strings to find 
 ДАН-909
 ```
 
+**Input files: tutors.txt**
+
+This file contais list of guests (tutors) to find
+
+*Example input in options.txt*
+```
+deminie@college.omsu.ru
+dan-909-o@college.omsu.ru
+dtn-809-o@college.omsu.ru
+```
+
 **Output files**
 
 Program creates google spreadsheet with timetable for given study group. If got many groups on input - it creates many timetables, one per group.
