@@ -1,5 +1,5 @@
 # Dispatcher-OmSU
-Application for the dispatcher to work with the Google Calendar via Web API.
+Application for the dispatcher to work with the Google Calendar via Web API. Google API has a serious protection system, so app need to be regitered, and all users have to be regitered too
 
 **Input files: options.txt**
 
@@ -35,34 +35,20 @@ dtn-809-o@college.omsu.ru
 
 Program creates google spreadsheet with timetable for given study group. If got many groups on input - it creates many timetables, one per group.
 
-**uses**
+**uses libraries**
 ``` 
-google.oauth2.credentials
-googleapiclient.discovery
-googleapiclient.errors
-google_auth_oauthlib.flow
-
-os
-datetime
-webbrowser
+google-api-python-client
+google
+google_auth_oauthlib
 ``` 
 
 Uses googleapiclient library from
 https://github.com/googleapis/google-api-python-client
 
-**Requres**
-```
-pip install google-api-python-client
-pip install selenium
-pip install pynput
-
-chromedriver
-https://sites.google.com/chromium.org/driver/
-```
 
 **Setup**
 
-There are a few setup steps you need to complete before you can use this library:
+There are a few setup steps you need to complete before you can use google-api-python-client library:
 
 1.  If you don't already have a Google account, [sign up](https://www.google.com/accounts).
 2.  If you have never created a Google APIs Console project, read the [Managing Projects page](http://developers.google.com/console/help/managing-projects) and create a project in the [Google API Console](https://console.developers.google.com/).
@@ -136,9 +122,11 @@ class Timetable
     # timeteble stores all scheduled events (pairs)
     # .print() - prints timetable to the screen
 ```
-**usefull parameters for query**
+
+**usefull parameters for API-call**
 ```
 Events: list
 calendarId - string from calendarList: List
 singleEvents = True - to expand recurring events into instances. False - to only return single one-off events and instances of recurring events, but not the underlying recurring events themselves. Optional. The default is False. 
 ```
+
